@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
         createTrackbar("Mascara Filtro Mediana", "Video", &mascaraMediana, 11, eventoTrack, NULL);
         createTrackbar("Filtro Gausiano", "Video", &mascaraGausiana, 11, eventoTrack, NULL);
         
-        while(3==3){
+        while(true){
             video >> frame;
             video >> gaus;
             video >> mediana;
@@ -47,9 +47,9 @@ int main(int argc, char *argv[]){
             video >> dilatar;
             video >> frame2;
 
-            erode(frame, erosion, tamanio);
-            dilate(frame, dilatar, tamanio);
-            morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            //erode(frame, erosion, tamanio);
+            //dilate(frame, dilatar, tamanio);
+            //morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
 
             /*Esta parte para el detector de movimiento */
             cvtColor(frame, frame2, COLOR_BGR2GRAY);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
             imshow("Movimiento", resta);
 
             
-            if(waitKey(23)==27)
+            if(waitKey(1)==27)
                 break;
         }      
     }
