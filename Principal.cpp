@@ -1,29 +1,5 @@
 #include "Header.hpp"
 
-
-//Mat aplicarGaussiana(Mat src, Mat dest, int mascara){
-//    
-//    if(mascara%2 == 0){
-//        GaussianBlur(src, dest, Size(),mascara+1);
-//        cout << "Valor debe ser impar, Mascara Gausiana: " <<mascara << "\n";
-//
-//    }else{
-//        GaussianBlur(src, dest, Size(),mascara);
-//
-//    };
-//
-//                  
-//}
-//Mat aplicarMediana(Mat src, Mat dest, int mascara){
-//    if(mascara%2 == 0){
-//        medianBlur(src, dest, mascara+1);
-//        cout << "Valor debe ser impar, Mascara Mediana: " <<mascara << "\n";
-//
-//    }else{
-//        medianBlur(mascara, dest, mascara);
-//    }
-//
-//}
 Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar;
 int mascaraMediana = 0;
 int mascaraGausiana = 0;
@@ -31,6 +7,39 @@ int kernel=3;
 
 void eventoTrack(int v, void *p){
     cout << "Valor: " << v << endl;
+}
+void Erosionar(){
+
+}
+
+void Dilatar(){
+
+}
+
+Mat aplicarMediana(Mat src, Mat dest, int mascara){
+    if(mascara%2 == 0){
+        medianBlur(src, dest, mascara+1);
+        cout << "Valor debe ser impar, Mascara Mediana: " <<mascara << "\n";
+        return dest;
+    }else{
+        medianBlur(src, dest, mascara);
+        return dest;
+    };
+    return dest;
+}
+
+Mat aplicarGaussiana(Mat src, Mat dest, int mascara){
+    Mat resultado;
+    if(mascara%2 == 0){
+        GaussianBlur(src, dest, Size(),mascara+1);
+        cout << "Valor debe ser impar, Mascara Gausiana: " <<mascara << "\n";
+        resultado = dest;
+    }else{
+        GaussianBlur(src, dest, Size(),mascara);
+        resultado =  dest;
+    };
+
+    return dest;
 }
 
 int main(int argc, char *argv[]){
@@ -57,20 +66,10 @@ int main(int argc, char *argv[]){
                 break;
             resize(frame, frame, Size(), 0.5,0.5);
             frame2 = frame;
-            
-            if(mascaraMediana%2 == 0){
-                medianBlur(frame, mediana, mascaraMediana+1);
-                cout << "Valor debe ser impar, Mascara Mediana: " <<mascaraMediana << "\n";
-            }else{
-                medianBlur(frame, mediana, mascaraMediana);
-            };
-            
-            if(mascaraGausiana%2 == 0){
-                GaussianBlur(frame, gaus, Size(),mascaraGausiana+1);
-                cout << "Valor debe ser impar, Mascara Gausiana: " <<mascaraGausiana << "\n";
-            }else{
-                GaussianBlur(frame, gaus, Size(),mascaraGausiana);
-            };
+
+            gaus = aplicarGaussiana(frame, gaus, mascaraGausiana);
+            mediana = aplicarMediana(frame, mediana, mascaraMediana);
+
             if(kernel%2 ==0){
                 tamanio = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
                 erode(frame, erosion, tamanio);
