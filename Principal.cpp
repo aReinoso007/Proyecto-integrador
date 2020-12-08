@@ -1,4 +1,4 @@
-#include "Header.hpp"
+#include "Operaciones.hpp"
 
 Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar;
 int mascaraMediana = 0;
@@ -8,8 +8,17 @@ int pixel= 0;
 void eventoTrack(int v, void *p){
     cout << "Valor: " << v << endl;
 }
-void Erosionar(){
-
+void Erosionar(Mat frame, Mat dest, Mat tam, int k){
+    if(k%2 ==0){
+        tam = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
+        erode(frame, erosion, tam);
+        dilate(frame, dilatar, tam);
+        morphologyEx(frame, blackhat, MORPH_BLACKHAT, tam);
+    }else{
+        erode(frame, erosion, tam);
+        dilate(frame, dilatar, tam);
+        morphologyEx(frame, blackhat, MORPH_BLACKHAT, tam);
+    };
 }
 
 void Dilatar(){
@@ -84,7 +93,6 @@ int main(int argc, char *argv[]){
         createTrackbar("Mascara Filtro Mediana", "Video", &mascaraMediana, 11, eventoTrack, NULL);
         createTrackbar("Filtro Gausiano", "Video", &mascaraGausiana, 11, eventoTrack, NULL);
         createTrackbar("Kernel", "Video", &kernel, 39, eventoTrack, NULL);
-        Mat tamanio = getStructuringElement(MORPH_CROSS, Size(kernel, kernel));
 
         while(true){
             video >> frame;
@@ -103,17 +111,17 @@ int main(int argc, char *argv[]){
             mediana = aplicarMediana(frame, mediana, mascaraMediana);
             frame2 = detectarMovimiento(frame);
 
-            if(kernel%2 ==0){
-                tamanio = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
-                erode(frame, erosion, tamanio);
-                dilate(frame, dilatar, tamanio);
-                morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
-            }else
-            {
-                erode(frame, erosion, tamanio);
-                dilate(frame, dilatar, tamanio);
-                morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
-            };
+            //if(kernel%2 ==0){
+            //    tamanio = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
+            //    erode(frame, erosion, tamanio);
+            //    dilate(frame, dilatar, tamanio);
+            //    morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            //}else
+            //{
+            //    erode(frame, erosion, tamanio);
+            //    dilate(frame, dilatar, tamanio);
+            //    morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            //};
             
             imshow("Video", frame);
             imshow("Gausiano", gaus);
