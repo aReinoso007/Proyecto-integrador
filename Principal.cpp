@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
             
             if(frame.rows==0 || frame.cols==0)
                 break;
-            //resize(frame, frame, Size(), 0.5,0.5);
+            resize(frame, frame, Size(), 0.5,0.5);
             frame2 = frame;
 
             //erode(frame, erosion, tamanio);
