@@ -37,11 +37,6 @@ int main(int argc, char *argv[]){
 
     VideoCapture video("resources/vid2.webm");
     //VideoCapture video(0);
-   
-
-    
-    
-   
 
     namedWindow("Video", WINDOW_AUTOSIZE);
     if(video.isOpened()){
@@ -63,11 +58,6 @@ int main(int argc, char *argv[]){
             resize(frame, frame, Size(), 0.5,0.5);
             frame2 = frame;
             
-
-            //erode(frame, erosion, tamanio);
-            //dilate(frame, dilatar, tamanio);
-            //morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
-
             if(mascaraMediana%2 == 0){
                 medianBlur(frame, mediana, mascaraMediana+1);
                 cout << "Valor debe ser impar, Mascara Mediana: " <<mascaraMediana << "\n";
@@ -93,7 +83,6 @@ int main(int argc, char *argv[]){
                 morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
             };
             
-
             /*Esta parte para el detector de movimiento */
             cvtColor(frame, frame, COLOR_BGR2GRAY);
             actual = frame.clone();
