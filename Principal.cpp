@@ -1,10 +1,5 @@
 #include "Header.hpp"
-Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar;
-int kernel=3;
 
-void eventoTrack(int v, void *p){
-    cout << "Valor: " << v << endl;
-}
 
 //Mat aplicarGaussiana(Mat src, Mat dest, int mascara){
 //    
@@ -29,8 +24,15 @@ void eventoTrack(int v, void *p){
 //    }
 //
 //}
+Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar;
 int mascaraMediana = 0;
 int mascaraGausiana = 0;
+int kernel=3;
+
+void eventoTrack(int v, void *p){
+    cout << "Valor: " << v << endl;
+}
+
 int main(int argc, char *argv[]){
 
     VideoCapture video("resources/vid2.webm");
@@ -39,14 +41,15 @@ int main(int argc, char *argv[]){
 
     
     
-    Mat tamanio = getStructuringElement(MORPH_CROSS, Size(kernel, kernel));
+   
 
     namedWindow("Video", WINDOW_AUTOSIZE);
     if(video.isOpened()){
       
         createTrackbar("Mascara Filtro Mediana", "Video", &mascaraMediana, 11, eventoTrack, NULL);
         createTrackbar("Filtro Gausiano", "Video", &mascaraGausiana, 11, eventoTrack, NULL);
- 
+        createTrackbar("Kernel", "Video", &kernel, 39, eventoTrack, NULL);
+        Mat tamanio = getStructuringElement(MORPH_CROSS, Size(kernel, kernel));
         while(true){
             video >> frame;
             video >> erosion;
@@ -61,9 +64,9 @@ int main(int argc, char *argv[]){
             frame2 = frame;
             
 
-            erode(frame, erosion, tamanio);
-            dilate(frame, dilatar, tamanio);
-            morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            //erode(frame, erosion, tamanio);
+            //dilate(frame, dilatar, tamanio);
+            //morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
 
             if(mascaraMediana%2 == 0){
                 medianBlur(frame, mediana, mascaraMediana+1);
@@ -78,6 +81,18 @@ int main(int argc, char *argv[]){
             }else{
                 GaussianBlur(frame, gaus, Size(),mascaraGausiana);
             };
+            if(kernel%2 ==0){
+                tamanio = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
+                erode(frame, erosion, tamanio);
+                dilate(frame, dilatar, tamanio);
+                morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            }else
+            {
+                erode(frame, erosion, tamanio);
+                dilate(frame, dilatar, tamanio);
+                morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
+            };
+            
 
             /*Esta parte para el detector de movimiento */
             cvtColor(frame, frame, COLOR_BGR2GRAY);
