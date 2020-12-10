@@ -98,3 +98,51 @@ cv::Mat Operaciones::aplicarCierre(cv::Mat frame, cv::Mat dest, int k){
     return resultado;
 }
 
+int Operaciones::logistics(int r, int kContrast, int mContrast){
+    double rd = (double) r;
+    double dK = ((double)kContrast)/100.0;
+    double res = 1.0/(1.0+exp(-dK*(rd-((double)mContrast))));
+    res*=255.0;
+    return ((int) res);
+}
+
+cv::Mat Operaciones::aplicarContrast(Mat frame, int m, int k){
+    Mat resultado, gris;
+    bool bandera = true;
+    int pixel = 0;
+    cvtColor(frame, gris, COLOR_BGR2GRAY);
+    if(bandera){
+        resultado = Mat::zeros(Size(frame.cols, frame.rows), CV_8UC1), Scalar(0,0,0);
+        bandera = false;
+    }
+    for(int i=0; i<gris.rows;i++){
+        for(int j=0;j<gris.cols;j++){
+            pixel = gris.at<uchar>(i,j);
+            resultado.at<uchar>(i,j) = logistics(pixel, k, m);
+        }
+    }
+    return resultado;
+}
+
+cv::Mat Operaciones::aplicarThreshold(Mat frame, int mThreshold){
+    Mat resultado, gris;
+    bool bandera = true;
+    int pixel = 0;
+    cvtColor(frame, gris, COLOR_BGR2GRAY);
+    if(bandera){
+        resultado = Mat::zeros(Size(frame.cols, frame.rows), CV_8UC1), Scalar(0,0,0);
+        bandera = false;
+    }
+    for(int i=0; i<gris.rows;i++){
+        for(int j=0;j<gris.cols;j++){
+            pixel = gris.at<uchar>(i,j);
+            if(pixel > mThreshold)
+                pixel = 255;
+            else
+                pixel =0;
+            resultado.at<uchar>(i,j) = pixel;
+        }
+    }
+    return resultado;
+}
+

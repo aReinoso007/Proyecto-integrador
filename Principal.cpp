@@ -1,16 +1,20 @@
 #include "Operaciones.hpp"
 
-Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar, camara, frame3, actual2, anterior2, resta2;
+Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar, camara, frame3, actual2, anterior2, resta2, cContrast, imgThreshold;
 int mascaraMediana = 0;
 int mascaraGausiana = 0;
 int kernel=3;
 int pixel= 0;
 int pixel2= 0;
+int mThreshold = 103;
+int mContrast = 103;
+int kContrast = 70;
 Operaciones operaciones;
 
 void eventoTrack(int v, void *p){
     cout << "Valor: " << v << endl;
 }
+
 
 Mat detectarMovimiento(Mat frame){
     Mat resultado;
@@ -85,6 +89,9 @@ int main(int argc, char *argv[]){
         createTrackbar("Mascara Filtro Mediana", "Video", &mascaraMediana, 11, eventoTrack, NULL);
         createTrackbar("Filtro Gausiano", "Video", &mascaraGausiana, 11, eventoTrack, NULL);
         createTrackbar("Kernel", "Video", &kernel, 39, eventoTrack, NULL);
+        createTrackbar("Threshold(m)", "Video", &mThreshold, 255, eventoTrack, NULL);
+        createTrackbar("cStretching (m)", "Video", &mContrast, 255, eventoTrack, NULL);
+        createTrackbar("cStretching (k)", "Video", &kContrast, 200, eventoTrack, NULL);
 
         while(true){
             video >> frame;
@@ -147,6 +154,7 @@ int main(int argc, char *argv[]){
         }      
     }
     video.release();
+    video2.release();
     destroyAllWindows();
 
     return 0;

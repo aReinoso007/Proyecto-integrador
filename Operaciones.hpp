@@ -30,4 +30,8 @@ class Operaciones{
             cv::Mat aplicarDilatar(cv::Mat, cv::Mat, int);
             cv::Mat aplicarApertura(cv::Mat, cv::Mat, int);
             cv::Mat aplicarCierre(cv::Mat, cv::Mat, int);
+            cv::Mat aplicarThreshold(cv::Mat, int);
+            cv::Mat aplicarContrast(cv::Mat, int, int);
+            int logistics(int, int, int);
+        
 };
