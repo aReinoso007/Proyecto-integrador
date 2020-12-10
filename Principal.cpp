@@ -1,56 +1,17 @@
 #include "Operaciones.hpp"
 
-Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar;
+Mat frame, actual, anterior, resta, frame2, gaus, mediana, erosion, apertura, cierre, blackhat, dilatar, camara, frame3, actual2, anterior2, resta2;
 int mascaraMediana = 0;
 int mascaraGausiana = 0;
 int kernel=3;
 int pixel= 0;
+int pixel2= 0;
+Operaciones operaciones;
+
 void eventoTrack(int v, void *p){
     cout << "Valor: " << v << endl;
 }
-void Erosionar(Mat frame, Mat dest, Mat tam, int k){
-    if(k%2 ==0){
-        tam = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
-        erode(frame, erosion, tam);
-        dilate(frame, dilatar, tam);
-        morphologyEx(frame, blackhat, MORPH_BLACKHAT, tam);
-    }else{
-        erode(frame, erosion, tam);
-        dilate(frame, dilatar, tam);
-        morphologyEx(frame, blackhat, MORPH_BLACKHAT, tam);
-    };
-}
 
-void Dilatar(){
-
-}
-
-Mat aplicarMediana(Mat src, Mat dest, int mascara){
-    Mat resultado;
-    if(mascara%2 == 0){
-        medianBlur(src, dest, mascara+1);
-        cout << "Valor debe ser impar, Mascara Mediana: " <<mascara << "\n";
-        resultado = dest;
-    }else{
-        medianBlur(src, dest, mascara);
-        resultado = dest;
-    };
-    return resultado = dest;
-}
-
-Mat aplicarGaussiana(Mat src, Mat dest, int mascara){
-    Mat resultado;
-    if(mascara%2 == 0){
-        GaussianBlur(src, dest, Size(),mascara+1);
-        cout << "Valor debe ser impar, Mascara Gausiana: " <<mascara << "\n";
-        resultado = dest;
-    }else{
-        GaussianBlur(src, dest, Size(),mascara);
-        resultado =  dest;
-    };
-
-    return dest;
-}
 Mat detectarMovimiento(Mat frame){
     Mat resultado;
     resultado = frame.clone();
@@ -82,13 +43,44 @@ Mat detectarMovimiento(Mat frame){
     return resultado;
 }
 
+Mat detectarMovimiento2(Mat frame){
+    Mat resultado;
+    resultado = frame.clone();
+    cvtColor(frame, frame, COLOR_BGR2GRAY);
+    actual2 = frame.clone();
+    if(anterior2.rows==0 || anterior2.cols==0){
+        anterior2 = frame.clone();
+    }
+    absdiff(actual2, anterior2, resta2);
+    anterior2 = actual2.clone();
+    threshold(resta2, resta2, 33, 255, THRESH_BINARY);
+    
+    for(int i=0;i<resultado.rows;i++){
+        for(int j=0;j<resultado.cols;j++){
+            pixel2 = (int) resta2.at<uchar>(i,j);
+            if (pixel2 != 0){
+            break;
+            }
+            resultado.at<Vec3b>(i,j) = resta2.at<Vec3b>(); 
+        }
+        for(int j=resta2.cols-1;j>=0;j--){
+            pixel2 = (int) resta2.at<uchar>(i,j);
+            if (pixel2 != 0)
+                break;
+            resultado.at<Vec3b>(i,j) = resta2.at<Vec3b>(); 
+        }
+    }
+
+    return resultado;
+}
+
 int main(int argc, char *argv[]){
 
     VideoCapture video("resources/vid2.webm");
-    //VideoCapture video(0);
+    VideoCapture video2(0);
 
     namedWindow("Video", WINDOW_AUTOSIZE);
-    if(video.isOpened()){
+    while(video.isOpened() & video2.isOpened()){
       
         createTrackbar("Mascara Filtro Mediana", "Video", &mascaraMediana, 11, eventoTrack, NULL);
         createTrackbar("Filtro Gausiano", "Video", &mascaraGausiana, 11, eventoTrack, NULL);
@@ -100,29 +92,38 @@ int main(int argc, char *argv[]){
             video >> blackhat;
             video >> dilatar;
             video >> gaus;
-            video >> mediana;
-            
+            video >> mediana;    
+            video2 >> frame3;
+            video2 >> camara;
+
             if(frame.rows==0 || frame.cols==0)
                 break;
-            resize(frame, frame, Size(), 0.5,0.5);
-            frame2 = frame;
-
-            gaus = aplicarGaussiana(frame, gaus, mascaraGausiana);
-            mediana = aplicarMediana(frame, mediana, mascaraMediana);
-            frame2 = detectarMovimiento(frame);
-
-            //if(kernel%2 ==0){
-            //    tamanio = getStructuringElement(MORPH_CROSS, Size(kernel+1, kernel+1));
-            //    erode(frame, erosion, tamanio);
-            //    dilate(frame, dilatar, tamanio);
-            //    morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
-            //}else
-            //{
-            //    erode(frame, erosion, tamanio);
-            //    dilate(frame, dilatar, tamanio);
-            //    morphologyEx(frame, blackhat, MORPH_BLACKHAT, tamanio);
-            //};
+            if(frame3.rows==0 || frame3.cols==0)
+                break;
             
+            resize(frame, frame, Size(), 0.3,0.3);
+
+            resize(frame3, frame3, Size(frame.cols, frame.rows));
+            resize(camara, camara, Size(frame3.cols, frame3.rows));
+            resize(gaus, gaus, Size(), 0.3,0.3);
+            resize(mediana, mediana, Size(), 0.3,0.3);
+            resize(erosion, erosion, Size(), 0.3,0.3);
+            resize(dilatar, dilatar, Size(), 0.3,0.3);
+            resize(blackhat, blackhat, Size(), 0.3,0.3);
+
+            frame2 = frame;
+            camara = frame3;
+
+            gaus = operaciones.filtroGassuaian(frame, gaus, mascaraGausiana);
+            mediana = operaciones.filtroMediana(frame, mediana, mascaraMediana);
+            frame2 = detectarMovimiento(frame);
+            
+            erosion = operaciones.aplicarDilatar(frame, erosion, kernel);
+            dilatar = operaciones.aplicarDilatar(frame, dilatar, kernel);
+            blackhat = operaciones.aplicarBlackHat(frame, blackhat, kernel);
+
+            camara = detectarMovimiento2(frame3);
+
             imshow("Video", frame);
             imshow("Gausiano", gaus);
             imshow("Mediana", mediana);
@@ -130,13 +131,14 @@ int main(int argc, char *argv[]){
             imshow("Erosion", erosion);
             imshow("Blackhat", blackhat);
             imshow("Movimiento", frame2);
+            imshow("Webcam", camara);
 
             
-            if(waitKey(23)==27)
+            if(waitKey(1)==27)
                 break;
         }      
     }
-
+    video.release();
     destroyAllWindows();
 
     return 0;

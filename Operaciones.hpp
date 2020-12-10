@@ -23,10 +23,9 @@ class Operaciones{
 
     public:
         Operaciones();
-            cv::Mat detectarMov(cv::Mat);
             cv::Mat filtroMediana(cv::Mat, cv::Mat, int);
             cv::Mat filtroGassuaian(cv::Mat, cv::Mat, int);
-            cv::Mat aplicarErosion(cv::Mat, cv::Mat, cv::Mat, int);
-            cv::Mat aplicarBlackHat(cv::Mat, cv::Mat, cv::Mat, int);
-            cv::Mat aplicarDilatar(cv::Mat, cv::Mat, cv::Mat, int);
+            cv::Mat aplicarErosion(cv::Mat, cv::Mat, int);
+            cv::Mat aplicarBlackHat(cv::Mat, cv::Mat, int);
+            cv::Mat aplicarDilatar(cv::Mat, cv::Mat, int);
 };

@@ -4,36 +4,6 @@ Operaciones::Operaciones(){
 
 }
 
-cv::Mat Operaciones::detectarMov(cv::Mat frame){
-    Mat resultado, actual, anterior, resta;
-    resultado = frame.clone();
-    cvtColor(frame, frame, COLOR_BGR2GRAY);
-    actual = frame.clone();
-    if(anterior.rows==0 || anterior.cols==0){
-        anterior = frame.clone();
-    }
-    absdiff(actual, anterior, resta);
-    anterior = actual.clone();
-    threshold(resta, resta, 33, 255, THRESH_BINARY);
-    int pixel=0;
-    for(int i=0;i<resultado.rows;i++){
-        for(int j=0;j<resultado.cols;j++){
-            pixel = (int) resta.at<uchar>(i,j);
-            if (pixel != 0){
-            break;
-            }
-            resultado.at<Vec3b>(i,j) = resta.at<Vec3b>(); 
-        }
-        for(int j=resta.cols-1;j>=0;j--){
-            pixel = (int) resta.at<uchar>(i,j);
-            if (pixel != 0)
-                break;
-            resultado.at<Vec3b>(i,j) = resta.at<Vec3b>(); 
-        }
-    }
-    return resultado;
-}
-
 cv::Mat Operaciones::filtroGassuaian(cv::Mat src, cv::Mat dest, int mascara){
     Mat resultado;
     if(mascara%2 == 0){
@@ -61,8 +31,8 @@ cv::Mat Operaciones::filtroMediana(cv::Mat src, cv::Mat dest, int mascara){
     return resultado = dest;
 }
 
-cv::Mat Operaciones::aplicarErosion(cv::Mat frame, cv::Mat dest, cv::Mat tam, int k){
-    Mat resultado;
+cv::Mat Operaciones::aplicarErosion(cv::Mat frame, cv::Mat dest, int k){
+    Mat resultado, tam;
     if(k%2 ==0){
         tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
         erode(frame, dest, tam);
@@ -74,8 +44,8 @@ cv::Mat Operaciones::aplicarErosion(cv::Mat frame, cv::Mat dest, cv::Mat tam, in
     return resultado;
 }
 
-cv::Mat Operaciones::aplicarBlackHat(cv::Mat frame, cv::Mat dest, cv::Mat tam, int k){
-    Mat resultado;
+cv::Mat Operaciones::aplicarBlackHat(cv::Mat frame, cv::Mat dest, int k){
+    Mat resultado, tam;
     if(k%2 ==0){
         tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
         morphologyEx(frame, dest, MORPH_BLACKHAT, tam);
@@ -87,9 +57,9 @@ cv::Mat Operaciones::aplicarBlackHat(cv::Mat frame, cv::Mat dest, cv::Mat tam, i
     return resultado;
 }
 
-cv::Mat Operaciones::aplicarDilatar(cv::Mat frame, cv::Mat dest, cv::Mat tam, int k){
+cv::Mat Operaciones::aplicarDilatar(cv::Mat frame, cv::Mat dest, int k){
 
-    Mat resultado;
+    Mat resultado, tam;
     if(k%2 ==0){
         tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
         dilate(frame, dest, tam);
@@ -101,3 +71,4 @@ cv::Mat Operaciones::aplicarDilatar(cv::Mat frame, cv::Mat dest, cv::Mat tam, in
     return resultado;
 
 }
+
