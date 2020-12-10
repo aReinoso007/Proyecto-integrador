@@ -28,4 +28,6 @@ class Operaciones{
             cv::Mat aplicarErosion(cv::Mat, cv::Mat, int);
             cv::Mat aplicarBlackHat(cv::Mat, cv::Mat, int);
             cv::Mat aplicarDilatar(cv::Mat, cv::Mat, int);
+            cv::Mat aplicarApertura(cv::Mat, cv::Mat, int);
+            cv::Mat aplicarCierre(cv::Mat, cv::Mat, int);
 };

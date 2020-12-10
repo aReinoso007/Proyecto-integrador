@@ -72,3 +72,29 @@ cv::Mat Operaciones::aplicarDilatar(cv::Mat frame, cv::Mat dest, int k){
 
 }
 
+cv::Mat Operaciones::aplicarApertura(cv::Mat frame, cv::Mat dest, int k){
+    Mat resultado, tam;
+    if(k%2 ==0){
+        tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
+        morphologyEx(frame, dest, MORPH_OPEN, tam);
+        resultado = dest;
+    }else{
+        morphologyEx(frame, dest, MORPH_OPEN, tam);
+        resultado = dest;
+    };
+    return resultado;
+}
+
+cv::Mat Operaciones::aplicarCierre(cv::Mat frame, cv::Mat dest, int k){
+    Mat resultado, tam;
+    if(k%2 ==0){
+        tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
+        morphologyEx(frame, dest, MORPH_CLOSE, tam);
+        resultado = dest;
+    }else{
+        morphologyEx(frame, dest, MORPH_CLOSE, tam);
+        resultado = dest;
+    };
+    return resultado;
+}
+

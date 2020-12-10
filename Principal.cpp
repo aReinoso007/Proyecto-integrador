@@ -92,7 +92,9 @@ int main(int argc, char *argv[]){
             video >> blackhat;
             video >> dilatar;
             video >> gaus;
-            video >> mediana;    
+            video >> mediana;
+            video >> apertura;
+            video >> cierre;    
             video2 >> frame3;
             video2 >> camara;
 
@@ -110,6 +112,8 @@ int main(int argc, char *argv[]){
             resize(erosion, erosion, Size(), 0.3,0.3);
             resize(dilatar, dilatar, Size(), 0.3,0.3);
             resize(blackhat, blackhat, Size(), 0.3,0.3);
+            resize(apertura, apertura, Size(), 0.3,0.3);
+            resize(cierre, cierre, Size(), 0.3,0.3);
 
             frame2 = frame;
             camara = frame3;
@@ -121,6 +125,8 @@ int main(int argc, char *argv[]){
             erosion = operaciones.aplicarDilatar(frame, erosion, kernel);
             dilatar = operaciones.aplicarDilatar(frame, dilatar, kernel);
             blackhat = operaciones.aplicarBlackHat(frame, blackhat, kernel);
+            apertura = operaciones.aplicarApertura(frame, apertura, kernel);
+            cierre = operaciones.aplicarCierre(frame, cierre, kernel);
 
             camara = detectarMovimiento2(frame3);
 
@@ -130,6 +136,8 @@ int main(int argc, char *argv[]){
             imshow("Dilatar", dilatar);
             imshow("Erosion", erosion);
             imshow("Blackhat", blackhat);
+            imshow("Apertura", apertura);
+            imshow("Cierre", cierre);
             imshow("Movimiento", frame2);
             imshow("Webcam", camara);
 
