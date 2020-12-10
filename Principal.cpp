@@ -101,7 +101,9 @@ int main(int argc, char *argv[]){
             video >> gaus;
             video >> mediana;
             video >> apertura;
-            video >> cierre;    
+            video >> cierre; 
+            video >> cContrast;
+            video >> imgThreshold;   
             video2 >> frame3;
             video2 >> camara;
 
@@ -115,6 +117,8 @@ int main(int argc, char *argv[]){
             resize(frame3, frame3, Size(frame.cols, frame.rows));
             resize(camara, camara, Size(frame3.cols, frame3.rows));
             resize(gaus, gaus, Size(), 0.3,0.3);
+            resize(cContrast, cContrast, Size(), 0.3,0.3);
+            resize(imgThreshold, imgThreshold, Size(), 0.3,0.3);
             resize(mediana, mediana, Size(), 0.3,0.3);
             resize(erosion, erosion, Size(), 0.3,0.3);
             resize(dilatar, dilatar, Size(), 0.3,0.3);
@@ -134,6 +138,8 @@ int main(int argc, char *argv[]){
             blackhat = operaciones.aplicarBlackHat(frame, blackhat, kernel);
             apertura = operaciones.aplicarApertura(frame, apertura, kernel);
             cierre = operaciones.aplicarCierre(frame, cierre, kernel);
+            cContrast = operaciones.aplicarContrast(frame, mContrast, kContrast);
+            imgThreshold = operaciones.aplicarThreshold(frame, mThreshold);
 
             camara = detectarMovimiento2(frame3);
 
@@ -145,6 +151,8 @@ int main(int argc, char *argv[]){
             imshow("Blackhat", blackhat);
             imshow("Apertura", apertura);
             imshow("Cierre", cierre);
+            imshow("Threshold", imgThreshold);
+            imshow("Contrast Stretching", cContrast);
             imshow("Movimiento", frame2);
             imshow("Webcam", camara);
 
