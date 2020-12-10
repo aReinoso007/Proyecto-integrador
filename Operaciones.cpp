@@ -86,3 +86,18 @@ cv::Mat Operaciones::aplicarBlackHat(cv::Mat frame, cv::Mat dest, cv::Mat tam, i
     };
     return resultado;
 }
+
+cv::Mat Operaciones::aplicarDilatar(cv::Mat frame, cv::Mat dest, cv::Mat tam, int k){
+
+    Mat resultado;
+    if(k%2 ==0){
+        tam = getStructuringElement(MORPH_CROSS, Size(k+1, k+1));
+        dilate(frame, dest, tam);
+        resultado = dest;
+    }else{
+        dilate(frame, dest, tam);
+        resultado = dest;
+    };
+    return resultado;
+
+}
